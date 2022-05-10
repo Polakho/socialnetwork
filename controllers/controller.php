@@ -8,7 +8,7 @@ switch ($action) {
         include "../models/UserManager.php";
         if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['passwordRetype'])) {
             $errorMsg = NULL;
-            if (!IsNicknameFree($_POST['username'])) {
+            if (IsNicknameFree($_POST['username']) !=0) {
                 $errorMsg = "Nickname already used.";
             } else if ($_POST['password'] != $_POST['passwordRetype']) {
                 $errorMsg = "Passwords are not the same.";
@@ -27,6 +27,13 @@ switch ($action) {
         } else {
             include "../views/RegisterForm.php";
         }
+        break;
+
+    case 'logout':
+        if (isset($_SESSION['userId'])) {
+            unset($_SESSION['userId']);
+        }
+        header('Location: ?action=display');
         break;
 
     case 'login':
@@ -54,27 +61,26 @@ switch ($action) {
         header('Location: ?action=display');
         break;
 
-  case 'newComment':
-    // code...
-    break;
+    case 'newComment':
+        // code...
+        break;
 
-  case 'display':
-  default:
-    include "../models/PostManager.php";
-    if (isset($_GET['search'])) {
-        $posts = SearchInPosts($_GET['search']);
-    } else {
-        $posts = GetAllPosts();
-    }
+    case 'display':
+    default:
+        include "../models/PostManager.php";
+        if (isset($_GET['search'])) {
+            $posts = SearchInPosts($_GET['search']);
+        } else {
+            $posts = GetAllPosts();
+        }
 
+        include "../models/CommentManager.php";
+        $comments = array();
 
-    include "../models/CommentManager.php";
-    $comments = array();
-
-    foreach ($posts as $post){
-        $id = $post["id"];
-        $comments[$id] = GetAllCommentsFromPostId($id);
-    }
-    include "../views/DisplayPosts.php";
-    break;
+        foreach ($posts as $post){
+            $id = $post["id"];
+            $comments[$id] = GetAllCommentsFromPostId($id);
+        }
+        include "../views/DisplayPosts.php";
+        break;
 }

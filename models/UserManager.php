@@ -15,25 +15,25 @@ function GetAllUsers()
   return $response->fetchAll();
 }
 
-function GetUserIdFromUserAndPassword($user, $pwd){
+function GetUserIdFromUserAndPassword($user, $pwd)
+{
     global $PDO;
 
     $data = ["user" => $user,
-             "pwd" => $pwd
-        ]   ;
+        "pwd" => $pwd
+    ];
 
     $sql = "select * from user WHERE user.nickname = :user and user.password = MD5(:pwd)";
 
     $stmt = $PDO->prepare($sql);
     $response = $stmt->execute($data);
-    if ($response === false){
+    if ($response === false) {
         return -1;
-    }else{
+    } else {
         $user = $stmt->fetch();
-        var_dump($user);
         return $user["id"];
     }
-
+}
     function IsNicknameFree($nickname)
     {
         global $PDO;
@@ -43,13 +43,13 @@ function GetUserIdFromUserAndPassword($user, $pwd){
                 "nickname" => $nickname
             )
         );
-        return $response->rowCount() == 0;
+        return $response->rowCount();
     }
 
     function CreateNewUser($nickname, $password)
     {
         global $PDO;
-        $response = $PDO->prepare("INSERT INTO user (nickname, password) values (:nickname , MD5(:password) )");
+        $response = $PDO->prepare("INSERT INTO user (nickname, password) values (:nickname , :password)");
         $response->execute(
             array(
                 "nickname" => $nickname,
@@ -57,5 +57,5 @@ function GetUserIdFromUserAndPassword($user, $pwd){
             )
         );
         return $PDO->lastInsertId();
+
     }
-}
