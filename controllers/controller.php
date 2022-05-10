@@ -1,6 +1,6 @@
 <?php
+$action = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
 
-$action = $_GET["action"] ?? "display";
 
 switch ($action) {
 
@@ -22,7 +22,7 @@ switch ($action) {
             } else {
                 $userId = CreateNewUser($_POST['username'], $_POST['password']);
                 $_SESSION['userId'] = $userId;
-                header('Location: ?action=display');
+                header('Location: /home');
             }
         } else {
             include "../views/RegisterForm.php";
@@ -33,17 +33,16 @@ switch ($action) {
         if (isset($_SESSION['userId'])) {
             unset($_SESSION['userId']);
         }
-        header('Location: ?action=display');
+        header('Location: /home');
         break;
 
     case 'login':
         include "../models/UserManager.php";
         if (isset($_POST['username']) && isset($_POST['password'])) {
             $userId = GetUserIdFromUserAndPassword($_POST['username'], $_POST['password']);
-            var_dump($userId);
             if ($userId > 0) {
                 $_SESSION['userId'] = $userId;
-                header('Location: ?action=display');
+                header('Location: /home');
             } else {
                 $errorMsg = "Wrong login and/or password.";
                 include "../views/LoginForm.php";
@@ -58,11 +57,15 @@ switch ($action) {
         if (isset($_SESSION['userId']) && isset($_POST['msg'])) {
             CreateNewPost($_SESSION['userId'], $_POST['msg']);
         }
-        header('Location: ?action=display');
+        header('Location: /home');
         break;
 
     case 'newComment':
-        // code...
+        include "../models/CommentManager.php";
+        if (isset($_SESSION['userId']) && isset($_POST['postId']) && isset($_POST['comment'])) {
+            CreateNewComment($_SESSION['userId'], $_POST['postId'], $_POST['comment']);
+        }
+        header('Location: /home');
         break;
 
     case 'display':

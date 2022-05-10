@@ -38,16 +38,16 @@
           if (isset($_SESSION['userId'])) {
               ?>
               <li class="nav-item">
-                  <a class="nav-link" href="?action=logout" role="button">Logout</a>
+                  <a class="nav-link" href="/logout" role="button">Logout</a>
               </li>
               <?php
           } else {
               ?>
               <li class="nav-item">
-                  <a class="nav-link" href="?action=login" role="button">Login</a>
+                  <a class="nav-link" href="/login" role="button">Login</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="?action=register" role="button">Sign Up</a>
+                  <a class="nav-link" href="/register" role="button">Sign Up</a>
               </li>
               <?php
           }
@@ -73,7 +73,7 @@
           ?>
           <div class="row newMsg">
               <div class="col">
-                  <form class="input-group" method="POST" action="?action=newMsg">
+                  <form class="input-group" method="POST" action="/newMsg">
                       <input name="msg" class="form-control" placeholder="Add a message" type="text">
                       <button type="submit" class="btn btn-primary">Submit</button>
                   </form>
@@ -81,6 +81,7 @@
           </div>
           <?php
       }
+
       ?>
     <div class="row">
       <div class="col">
@@ -104,6 +105,21 @@
                 <p><?= htmlspecialchars($onePost['content']); ?></p>
               </div>
               <div class="post-footer">
+                  <?php
+                  if (isset($_SESSION['userId'])) {
+                      ?>
+                      <div class="input-group">
+                          <form class="input-group" method="POST" action="/newComment">
+                              <input name="postId" type="hidden" value="<?php echo $onePost['id'] ?>">
+                              <input name="comment" class="form-control" placeholder="Add a comment" type="text">
+                              <span class="input-group-text">
+        <a href="#" onclick="$(this).closest('form').submit()"><i class="fa fa-edit"></i></a>
+      </span>
+                          </form>
+                      </div>
+                      <?php
+                  }
+                  ?>
                 <ul class="comments-list">
                   <?php
                   $postId = $onePost['id'];

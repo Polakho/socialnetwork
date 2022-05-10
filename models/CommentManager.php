@@ -32,7 +32,8 @@ function GetAllCommentsFromUserId($userId)
   return $response->fetchAll();
 }
 
-function GetAllCommentsFromPostId($postId){
+function GetAllCommentsFromPostId($postId)
+{
     global $PDO;
     $response = $PDO->query(
         "SELECT comment.*"
@@ -41,4 +42,18 @@ function GetAllCommentsFromPostId($postId){
         . "ORDER BY comment.created_at ASC"
     );
     return $response->fetchAll();
+}
+
+function CreateNewComment($userId, $postId, $comment)
+{
+    global $PDO;
+
+    $sql = "INSERT INTO comment (user_id, post_id, content) values (:userId, :postId, :content)";
+
+    $stmt = $PDO->prepare($sql);
+    $response = $stmt->execute(
+        [
+        "userId" => $userId,
+        "postId" => $postId,
+        "content" => $comment]);
 }

@@ -49,7 +49,7 @@ function GetUserIdFromUserAndPassword($user, $pwd)
     function CreateNewUser($nickname, $password)
     {
         global $PDO;
-        $response = $PDO->prepare("INSERT INTO user (nickname, password) values (:nickname , :password)");
+        $response = $PDO->prepare("INSERT INTO user (nickname, password) values (:nickname , MD5(:password))");
         $response->execute(
             array(
                 "nickname" => $nickname,
