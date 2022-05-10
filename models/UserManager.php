@@ -22,7 +22,7 @@ function GetUserIdFromUserAndPassword($user, $pwd){
              "pwd" => $pwd
         ]   ;
 
-    $sql = "select * from user WHERE user.nickname = :user and user.password = :pwd";
+    $sql = "select * from user WHERE user.nickname = :user and user.password = MD5(:pwd)";
 
     $stmt = $PDO->prepare($sql);
     $response = $stmt->execute($data);
@@ -49,7 +49,7 @@ function GetUserIdFromUserAndPassword($user, $pwd){
     function CreateNewUser($nickname, $password)
     {
         global $PDO;
-        $response = $PDO->prepare("INSERT INTO user (nickname, password) values (:nickname , :password )");
+        $response = $PDO->prepare("INSERT INTO user (nickname, password) values (:nickname , MD5(:password) )");
         $response->execute(
             array(
                 "nickname" => $nickname,
@@ -57,4 +57,5 @@ function GetUserIdFromUserAndPassword($user, $pwd){
             )
         );
         return $PDO->lastInsertId();
+    }
 }
